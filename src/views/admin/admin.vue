@@ -30,6 +30,7 @@ export default {
       }
     };
   },
+
   methods: {
     async getUserList() {
       const result = await getUserList(this.info);
@@ -44,9 +45,10 @@ export default {
   height: 100%;
 }
 .el-aside {
-  background-color: #333744;
+  background-color: #4a6a8b;
+  // background-color: #396ea3;
 }
 .el-main {
-  background-color: #eaedf1;
+  background-color: rgb(255, 245, 247);
 }
 </style>

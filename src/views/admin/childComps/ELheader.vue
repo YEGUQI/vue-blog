@@ -30,7 +30,7 @@ export default {
 
 <style lang="less" scoped>
 .el-header {
-  background-color: #373d41;
+  background-color: #6993bd;
   display: flex;
   justify-content: space-between;
   align-items: center;

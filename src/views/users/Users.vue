@@ -1,9 +1,22 @@
 <template>
-  <div>用户列表</div>
+  <div>
+    <UserContent></UserContent>
+  </div>
 </template>
 
 <script>
-export default {};
+import UserContent from "./childComps/UserContent";
+
+export default {
+  name: "User",
+  components: {
+    UserContent
+  },
+  data() {
+    return {};
+  },
+  created() {}
+};
 </script>
 
 <style>

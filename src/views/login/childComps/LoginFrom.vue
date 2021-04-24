@@ -69,6 +69,7 @@ export default {
     };
   },
   methods: {
+    // 登录逻辑
     loginClick() {
       this.$refs.loginRef.validate(async valid => {
         if (!valid) {
