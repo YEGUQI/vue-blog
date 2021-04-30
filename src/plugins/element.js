@@ -24,7 +24,13 @@ import {
   Dialog,
   Select,
   Option,
-  MessageBox
+  MessageBox,
+  Tag,
+  Alert,
+  Upload,
+  DatePicker,
+  Carousel,
+  CarouselItem
 } from 'element-ui'
 
 Vue.prototype.$message = Message
@@ -52,3 +58,9 @@ Vue.use(Switch)
 Vue.use(Dialog)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(Tag)
+Vue.use(Alert)
+Vue.use(DatePicker)
+Vue.use(Upload)
+Vue.use(Carousel)
+Vue.use(CarouselItem)

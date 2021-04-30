@@ -12,7 +12,11 @@ module.exports = {
         login: "@/views/login",
         admin: "@/views/admin",
         users: "@/views/users",
+        article: "@/views/article",
       }
-    }
+    },
   },
+  devServer: {
+    host: '127.0.0.1',
+  }
 }

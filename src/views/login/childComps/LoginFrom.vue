@@ -76,11 +76,14 @@ export default {
           return false;
         }
         const { data: result } = await postLogin(this.loginForm);
+        console.log(result);
         // 根据状态码判断登录是否成功
         if (result.meta.status !== 200) {
           return this.$message.error("登录失败");
         }
         this.$message.success("登录成功");
+        // 将用户名保存在 sessionStorage 中
+        window.sessionStorage.setItem("username", result.data.username);
         console.log(result);
         // 登录成功 将从服务器返回的 token 值保存到客户端 sessionStorage 中
         // 项目中除了登录之外的 API 接口，必须要在登录以后才能访问

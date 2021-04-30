@@ -1,19 +1,29 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
 const Login = () => import("login/Login")
-const admin = () => import("admin/admin")
-const users = () => import("users/Users")
+const Admin = () => import("admin/Admin")
+const Welcome = () => import("admin/childComps/Welcome")
+const Users = () => import("users/Users")
+const Article = () => import("article/Article")
+const AddArticle = () => import("content/addArticle")
+const EditArticle = () => import("content/editArticle")
+
 Vue.use(VueRouter)
 
 const routes = [
   // home
-  { path: "/", redirect: "/login " },
+
   { path: '/login', component: Login },
   {
-    path: '/admin', component: admin, children: [
-      { path: '/users', component: users }
+    path: '/admin', component: Admin, redirect: "/welcome", children: [
+      { path: '/welcome', component: Welcome },
+      { path: '/users', component: Users },
+      { path: '/article', component: Article },
+      { path: '/add', component: AddArticle },
+      { path: '/edit', component: EditArticle }
     ]
-  }
+  },
 
 ]
 

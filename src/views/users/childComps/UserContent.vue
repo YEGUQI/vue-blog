@@ -6,7 +6,7 @@
         <!-- 搜索框区域 -->
         <el-col :span="8">
           <el-input
-            placeholder="请输入内容"
+            placeholder="请输入用户名"
             v-model="info.query"
             clearable
             @change="getUserlist"
@@ -85,7 +85,7 @@
         :page-sizes="[5, 15, 25, 35]"
         :page-size="userList.psize"
         layout="total, sizes, prev, pager, next, jumper"
-        :total="userList.total"
+        :total="total"
       >
       </el-pagination>
 
@@ -304,7 +304,8 @@ export default {
         }
       ],
       // 根据 id 查找的用户信息
-      userinfo: {}
+      userinfo: {},
+      total: 0
     };
   },
   created() {
@@ -318,6 +319,7 @@ export default {
         this.$message.error("获取用户列表数据失败");
       }
       this.userList = result.data;
+      this.total = result.data.total;
     },
     // 每页数据条数改变时会触发
     handleSizeChange(newsize) {
