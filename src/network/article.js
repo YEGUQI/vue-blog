@@ -1,8 +1,7 @@
 import { request } from "./request";
-import qs from "qs"
 
 // 获取文章列表数据 
-export function getArticlesList (info) {
+export function getAllArticlesList (info) {
   return request({
     method: "get",
     url: "admin/articles",
@@ -12,7 +11,6 @@ export function getArticlesList (info) {
 
 // 添加文章
 export function addArticle (articleInfo) {
-  console.log(qs.stringify(articleInfo));
   return request({
     method: "post",
     url: "admin/articles/add",

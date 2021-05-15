@@ -1,7 +1,7 @@
 <template>
-  <div class="login_box">
+  <div class="Register_box">
     <!-- 头像区域 -->
-    <div class="login_img">
+    <div class="Register_img">
       <img
         src="~assets/login.png"
         alt=""
@@ -9,117 +9,129 @@
     </div>
     <!-- 登录表单区域 -->
     <el-form
-      :model="loginForm"
+      :model="RegisterForm"
       label-width="0px"
-      :rules="loginRules"
-      ref="loginRef"
-      class="login_form"
+      :rules="RegisterRules"
+      ref="RegisterRef"
+      class="Register_form"
     >
+      <!-- 用户名 -->
+      <el-form-item prop="username">
+        <el-input
+          v-model="RegisterForm.username"
+          prefix-icon="el-icon-user-solid"
+          placeholder="请输入昵称"
+          v-model.trim="RegisterForm.username"
+        ></el-input>
+      </el-form-item>
       <!-- 邮箱 -->
       <el-form-item prop="email">
         <el-input
-          v-model="loginForm.email"
+          v-model="RegisterForm.email"
           prefix-icon="el-icon-user-solid"
           placeholder="请输入邮箱"
-          v-model.trim="loginForm.email"
+          v-model.trim="RegisterForm.email"
         ></el-input>
       </el-form-item>
       <!-- 密码 -->
       <el-form-item prop="password">
         <el-input
-          v-model="loginForm.password"
+          v-model="RegisterForm.password"
           prefix-icon="el-icon-lock"
           placeholder="请输入密码"
-          v-model.trim="loginForm.password"
           type="password"
+          v-model.trim="RegisterForm.password"
+        ></el-input>
+      </el-form-item>
+      <!-- 二次确认密码 -->
+      <el-form-item prop="password">
+        <el-input
+          v-model="password2"
+          prefix-icon="el-icon-lock"
+          placeholder="请再次输入密码"
+          type="password"
+          v-model.trim="password2"
         ></el-input>
       </el-form-item>
       <!-- 按钮区域 -->
       <el-form-item class="btns">
         <el-button
           type="primary"
-          @click="loginClick"
-        >登录</el-button>
+          @click="RegisterClick"
+        >注册</el-button>
         <el-button
           type="info"
-          @click="cleanLogin"
+          @click="cleanRegister"
         >重置</el-button>
 
       </el-form-item>
+      <!-- 链接 -->
       <el-link
         type="primary"
         class="golink"
         :underline='false'
         @click="goRegister"
       >
-        <u>没有账号？点此注册</u>
+        <u>已有账号，点此去登录</u>
       </el-link>
     </el-form>
   </div>
 </template>
 
 <script>
-import { postLogin } from "network/login";
+import { postAddUser } from "network/user";
+
 export default {
-  name: "LoginForm",
   data() {
     return {
       // 登录表单数据
-      loginForm: {
-        email: "2741827044@qq.com",
-        password: "y17681263164"
+      RegisterForm: {
+        username: "",
+        email: "",
+        password: ""
       },
-      // 登录表单验证规则
-      loginRules: {
+      password2: "",
+      // 注册表单验证规则
+      RegisterRules: {
         email: [
           { required: true, message: "请输入邮箱地址", trigger: "blur" },
           { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }
         ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        username: [{ required: true, message: "请输入昵称", trigger: "blur" }]
       }
     };
   },
-
   methods: {
-    // 登录逻辑
-    loginClick() {
-      this.$refs.loginRef.validate(async valid => {
-        if (!valid) {
-          return false;
-        }
-        const { data: result } = await postLogin(this.loginForm);
-        // 根据状态码判断登录是否成功
-        if (result.meta.status !== 200) {
-          return this.$message.error("登录失败");
-        }
-        this.$message.success("登录成功");
-        // 将用户名保存在 sessionStorage 中
-        window.sessionStorage.setItem("userId", result.data._id);
-        window.sessionStorage.setItem("username", result.data.username);
-        // 登录成功 将从服务器返回的 token 值保存到客户端 sessionStorage 中
-        // 项目中除了登录之外的 API 接口，必须要在登录以后才能访问
-        // token 只应在网页打开期间生效 所以保存到 sessionStorage 中
-        window.sessionStorage.setItem("token", result.data.token);
-        // 登录成功跳转到 首页
-        this.$router.push("/home");
-      });
+    // 用户注册
+    async RegisterClick() {
+      if (this.RegisterForm.password !== this.password2) {
+        return this.$message.error("两次输入的密码不一致，请重新输入");
+      }
+      const { data: result } = await postAddUser(this.RegisterForm);
+      if (result.meta.status !== 200) {
+        return this.$message.error(result.meta.msg);
+      }
+      this.$message.success("注册成功");
+      this.$router.push("/login");
     },
     // 重置表单
-    cleanLogin() {
-      this.$refs.loginRef.resetFields();
+    cleanRegister() {
+      this.$refs.RegisterRef.resetFields();
     },
-    // 跳转到注册页面
+    // 点击去登录界面
     goRegister() {
-      this.$router.push("/register");
+      this.$router.push("/login");
     }
   }
 };
 </script>
 
 <style lang="less" scoped>
-.login_box{
+
+.Register_box{
   width: 450px;
-  height: 300px;
+  height: 400px;
   background-color: #fff;
   position: absolute;
   top: 50%;
@@ -128,7 +140,7 @@ export default {
   border-radius: 5px;
 
 }
-  .login_img{
+  .Register_img{
     width: 130px;
     height: 130px;
     background-color: #fff;
@@ -146,7 +158,7 @@ export default {
         border: 1px solid #eee;
   }
 }
-.login_form {
+.Register_form {
   position: absolute;
   bottom: 0;
   width: 100%;

@@ -3,6 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from "./store";
 import './plugins/element.js'
+// 导入图片懒加载
+import VueLazyload from 'vue-lazyload'
 // 导入富文本编辑器
 import VueQuillEditor from 'vue-quill-editor'
 
@@ -14,6 +16,11 @@ import 'quill/dist/quill.bubble.css'
 // 在全局注册富文本编辑器
 Vue.use(VueQuillEditor)
 
+// 在全局注册图片懒加载
+Vue.use(VueLazyload, {
+  // 当文章封面加载出错时显示
+  error: require('./assets/img/error.png'),
+})
 Vue.config.productionTip = false
 
 // 格式化日期时间的过滤器

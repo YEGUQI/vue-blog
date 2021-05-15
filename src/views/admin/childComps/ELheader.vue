@@ -15,7 +15,10 @@
         <el-tag>{{username}}</el-tag>
       </div>
       <!-- 退出登录按钮区域 -->
-      <el-button @click="clearQuit">退出登录</el-button>
+      <el-button
+        @click="clearQuit"
+        type="info"
+      >退出登录</el-button>
     </el-header>
   </div>
 </template>

@@ -251,8 +251,8 @@ export default {
         username: "",
         email: "",
         password: "",
-        role: "",
-        state: 0
+        role: "普通用户",
+        state: true
       },
       // 添加用户表单的验证规则
       addUserRules: {
@@ -316,7 +316,7 @@ export default {
     async getUserlist() {
       const { data: result } = await getUserList(this.info);
       if (result.meta.status !== 200) {
-        this.$message.error("获取用户列表数据失败");
+        return this.$message.error("获取用户列表数据失败");
       }
       this.userList = result.data;
       this.total = result.data.total;
@@ -357,7 +357,7 @@ export default {
       const { data: result } = await getFindUserById(id);
       console.log(result);
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        return this.$message.error(result.meta.msg);
       }
       this.userinfo = result.data;
       this.editUserDialogVisible = true;
@@ -366,7 +366,7 @@ export default {
     async userStateChange(stateInfo) {
       const { data: result } = await putUserState(stateInfo);
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        return this.$message.error(result.meta.msg);
       }
       this.$message.success(result.meta.msg);
     },
@@ -384,15 +384,16 @@ export default {
       // 发送删除请求
       const { data: result } = await deleteUserById(id);
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        return this.$message.error(result.meta.msg);
       }
       this.$message.success(result.meta.msg);
+      this.getUserlist();
     },
     // 修改用户信息
     async editUser() {
       const { data: result } = await editUser(this.userinfo);
       if (result.meta.status !== 200) {
-        this.$message.error(result.meta.msg);
+        return this.$message.error(result.meta.msg);
       }
       this.$message.success(result.meta.msg);
       this.editUserDialogVisible = false;

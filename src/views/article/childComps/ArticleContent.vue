@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column
           prop="isStick"
-          label="文章置顶"
+          label="精选文章"
           sortable
         >
           <template slot-scope="scope">
@@ -102,11 +102,12 @@
 
 <script>
 import {
-  getArticlesList,
+  getAllArticlesList,
   deleteArticle,
   StickArticle,
   findArticle
 } from "network/article";
+import { getFindUserById } from "network/user";
 export default {
   name: "ArticleContent",
   data() {
@@ -119,7 +120,8 @@ export default {
       // 文章数据列表
       articlesList: [],
       // 总数据条数
-      total: 0
+      total: 0,
+      username: ""
     };
   },
   created() {
@@ -128,7 +130,7 @@ export default {
   methods: {
     // 跳转到添加文章页面
     goAddatricle() {
-      this.$router.push("/add");
+      this.$router.push("/admadd");
     },
     // 每页数据条数改变时会触发
     handleSizeChange(newsize) {
@@ -140,14 +142,15 @@ export default {
       this.info.pagenum = pagenum;
       this.getArticleList();
     },
-    // 获取用户列表数据
+    // 获取所有文章数据
     async getArticleList() {
-      const { data: result } = await getArticlesList(this.info);
+      const { data: result } = await getAllArticlesList(this.info);
       if (result.meta.status !== 200) {
         return this.$message.error("获取文章列表数据失败");
       }
       this.articlesList = result.data;
       this.total = result.data.total;
+      this.getUserinfo();
     },
     //删除文章
     async deleteArticle(id) {
@@ -181,9 +184,20 @@ export default {
     },
     // 根据 id 查找文章信息
     async findArticleById(id) {
+      window.sessionStorage.setItem("articleId", id);
       const { data: result } = await findArticle(id);
       this.$store.state.article = result.data;
       this.$router.push("/edit");
+    },
+    // 根据 id 查询用户信息
+    async getUserinfo() {
+      // 遍历 文章数据中的 用户名
+      this.articlesList.article.forEach(async item => {
+        // 根据 id查询用户信息
+        const { data: result } = await getFindUserById(item.author);
+        // 将文章数据中的用户 id 替换为用户名
+        item.author = result.data.username;
+      });
     }
   }
 };

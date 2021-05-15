@@ -30,9 +30,12 @@
         >
           <el-input v-model="editArticleForm.title"></el-input>
         </el-form-item>
+        <el-form-item label="文章简介">
+          <el-input v-model="editArticleForm.intro"></el-input>
+        </el-form-item>
         <el-form-item label="作者">
           <el-input
-            v-model="editArticleForm.author"
+            v-model="usernma"
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -91,7 +94,8 @@
 </template>
 
 <script>
-import { editArticle } from "network/article";
+import { editArticle, findArticle } from "network/article";
+import { getFindUserById } from "network/user";
 export default {
   name: "editArticle",
   data() {
@@ -102,8 +106,10 @@ export default {
         author: "",
         publishDate: "",
         cover: {},
-        content: ""
+        content: "",
+        intro: ""
       },
+      usernma: "",
       // 添加文章表单验证规则
       editArticleRules: {
         title: [
@@ -115,7 +121,6 @@ export default {
         ],
         publishDate: [
           {
-            type: "date",
             required: true,
             message: "请选择日期",
             trigger: "change"
@@ -141,22 +146,17 @@ export default {
     };
   },
   created() {
-    this.editArticleForm = this.$store.state.article;
-    this.fileList[0].url = this.$store.state.article.cover.url;
-    this.fileList[0].name = this.$store.state.article.cover.name;
-    this.previewUrl = this.$store.state.article.cover.url;
+    this.getArticleInfo();
   },
   methods: {
     // 监听图片上传成功的事件
     uploadSuccess(response) {
-      console.log(response);
       // 将服务器返回的 路径保存在 editArticleForm.cover 中
       this.editArticleForm.cover = response.data;
       this.handlePreview();
     },
     // 点击预览图片的操作
     handlePreview(file) {
-      console.log(file);
       this.previewUrl = file.url;
       this.previewDialogVisible = true;
     },
@@ -167,6 +167,40 @@ export default {
     //文件超出个数限制时的钩子函数
     beyondlimit() {
       this.$message.warning("只能上传一张封面！");
+    },
+    // 根据 id 查询文章信息
+    async getArticleInfo() {
+      const { data: result } = await findArticle(
+        window.sessionStorage.getItem("articleId")
+      );
+      if (result.meta.status !== 200) {
+        return this.$message.error(result.meta.msg);
+      }
+      this.$message.success(result.meta.msg);
+      this.editArticleForm = result.data;
+      // 文章有封面
+      if (this.editArticleForm.cover !== null) {
+        // 获取 文章封面数据
+        this.fileList[0].url = this.editArticleForm.cover.url;
+        this.fileList[0].name = this.editArticleForm.cover.name;
+        this.previewUrl = this.editArticleForm.cover.url;
+      } else {
+        // 文章没有封面
+        this.fileList = [];
+      }
+
+      // 将文章信息 中保存的 用户id 替换成 用户名
+      this.getUserinfo();
+    },
+    // 根据 id 查询 用户名
+    async getUserinfo() {
+      const { data: result } = await getFindUserById(
+        this.editArticleForm.author
+      );
+      if (result.meta.status !== 200) {
+        return this.$message.error("获取用户信息失败");
+      }
+      this.usernma = result.data.username;
     },
     // 点击修改文章
     async editArticle() {

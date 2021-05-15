@@ -13,10 +13,13 @@ module.exports = {
         admin: "@/views/admin",
         users: "@/views/users",
         article: "@/views/article",
+        register: "@/views/register",
+        articleDetails: "@/views/articleDetails"
       }
     },
   },
   devServer: {
-    host: '127.0.0.1',
+    host: '0.0.0.0',
+    disableHostCheck: true
   }
 }

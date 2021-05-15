@@ -1,12 +1,14 @@
 <template>
   <div>
     <!-- 面包屑导航 -->
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>文章管理</el-breadcrumb-item>
-      <el-breadcrumb-item>文章列表</el-breadcrumb-item>
-      <el-breadcrumb-item>发布文章</el-breadcrumb-item>
-    </el-breadcrumb>
+    <slot name="top">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/admin' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item>文章管理</el-breadcrumb-item>
+        <el-breadcrumb-item>文章列表</el-breadcrumb-item>
+        <el-breadcrumb-item>发布文章</el-breadcrumb-item>
+      </el-breadcrumb>
+    </slot>
     <el-card>
       <!-- 消息提示区域 -->
       <el-alert
@@ -30,9 +32,12 @@
         >
           <el-input v-model="addArticleForm.title"></el-input>
         </el-form-item>
+        <el-form-item label="文章简介">
+          <el-input v-model="addArticleForm.intro"></el-input>
+        </el-form-item>
         <el-form-item label="作者">
           <el-input
-            v-model="addArticleForm.author"
+            v-model="username"
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -65,7 +70,11 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="文章内容">
-          <quill-editor v-model="addArticleForm.content "></quill-editor>
+          <quill-editor
+            v-model="addArticleForm.content"
+            :options="editorOption"
+            ref="myQuillEditor"
+          ></quill-editor>
           <el-button
             type="primary"
             class="subbtn"
@@ -91,6 +100,7 @@
 
 <script>
 import { addArticle } from "network/article";
+import { quillRedefine } from "vue-quill-editor-upload";
 export default {
   name: "addArticle",
   data() {
@@ -98,10 +108,12 @@ export default {
       // 添加文章表单数据
       addArticleForm: {
         title: "",
+        // 此处传递回去的应该是用户id
         author: "",
         publishDate: "",
         cover: {},
-        content: ""
+        content: "",
+        intro: ""
       },
       // 添加文章表单验证规则
       addArticleRules: {
@@ -123,6 +135,7 @@ export default {
       },
       // 文件上传的url地址
       uploadUrl: "http://127.0.0.1/admin/articles/upload",
+      uploadUrl2: "http://127.0.0.1/admin/articles/articleUp",
       // 配置文件上传的请求头信息
       uploadheaders: {
         Authorization: window.sessionStorage.getItem("token")
@@ -130,17 +143,32 @@ export default {
       // 配置预览图片的 url
       previewUrl: "",
       // 控制预览图片对话框的显示与隐藏
-      previewDialogVisible: false
+      previewDialogVisible: false,
+      editorOption: {},
+      // 页面上显示的用户名
+      username: ""
     };
   },
   created() {
-    // 获取当前用户名
-    this.addArticleForm.author = window.sessionStorage.getItem("username");
+    // 获取用户 id 传递给后端
+    this.addArticleForm.author = window.sessionStorage.getItem("userId");
+    // 根据获取当前用户名
+    this.username = window.sessionStorage.getItem("username");
+    //修改富文本编辑器图片上传路径
+    this.editorOption = quillRedefine({
+      // 图片上传的设置
+      uploadConfig: {
+        action: this.uploadUrl2, // 必填参数 图片上传地址
+        res: respnse => {
+          console.log(respnse);
+          return respnse.data.url; //return图片 url
+        }
+      }
+    });
   },
   methods: {
     // 监听图片上传成功的事件
     uploadSuccess(response) {
-      console.log(response);
       // 将服务器返回的 路径保存在 addArticleForm.cover 中
       this.addArticleForm.cover = response.data;
       console.log(this.addArticleForm.cover);

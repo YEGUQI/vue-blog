@@ -5,7 +5,8 @@ import Vuex from "vuex";
 Vue.use(Vuex)
 
 const state = {
-  article: {}
+  article: {},
+  articleId: ''
 }
 const store = new Vuex.Store({
   state
