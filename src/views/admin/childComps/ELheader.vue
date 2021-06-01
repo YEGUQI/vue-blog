@@ -7,7 +7,7 @@
           src="~assets/img/login.png"
           alt=""
         >
-        <span>博客管理系统</span>
+        <span>一味愚管理系统</span>
       </div>
       <!-- 用户名区域 -->
       <div>

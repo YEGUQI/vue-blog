@@ -340,7 +340,7 @@ export default {
       userinfo: {},
       total: 0,
       // 上传头像的 url
-      uploadUrl: "http://127.0.0.1/admin/articles/avatar",
+      uploadUrl: "http://39.106.5.72:8889/admin/articles/avatar",
       imageUrl: "",
       dialogVisible: false,
       // 文件列表

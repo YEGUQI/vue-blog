@@ -66,8 +66,8 @@ export default {
     return {
       // 登录表单数据
       loginForm: {
-        email: "2741827044@qq.com",
-        password: "y17681263164"
+        email: "",
+        password: ""
       },
       // 登录表单验证规则
       loginRules: {

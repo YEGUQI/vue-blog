@@ -3,7 +3,7 @@ import axios from "axios"
 // import Nprogress from "nprogress"
 export function request (config) {
   const instance = axios.create({
-    baseURL: "http://127.0.0.1/",
+    baseURL: "http://39.106.5.72:8889/",
     timeout: 5000,
   })
   // 配置请求拦截

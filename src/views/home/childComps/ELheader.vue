@@ -9,7 +9,7 @@
         src="~assets/img/login.png"
         alt=""
       >
-      <span>博客</span>
+      <span>一味愚</span>
     </div>
 
     <!-- 用户名区域 -->

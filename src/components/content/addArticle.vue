@@ -121,7 +121,7 @@ export default {
       addArticleRules: {
         title: [
           { required: true, message: "请输入文章标题", trigger: "blur" },
-          { min: 4, max: 20, message: "长度在 4 到 20 个字符", trigger: "blur" }
+          { min: 4, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
         ],
         content: [
           { required: true, message: "请输入文章内容", trigger: "blur" }
@@ -136,8 +136,8 @@ export default {
         ]
       },
       // 文件上传的url地址
-      uploadUrl: "http://127.0.0.1/admin/articles/upload",
-      uploadUrl2: "http://127.0.0.1/admin/articles/articleUp",
+      uploadUrl: "http://39.106.5.72:8889/admin/articles/upload",
+      uploadUrl2: "http://39.106.5.72:8889/admin/articles/articleUp",
       // 配置文件上传的请求头信息
       uploadheaders: {
         Authorization: window.sessionStorage.getItem("token")

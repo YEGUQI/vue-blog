@@ -1,21 +1,52 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-const Login = () => import("login/Login")
-const Admin = () => import("admin/Admin")
-const Welcome = () => import("admin/childComps/Welcome")
-const Users = () => import("users/Users")
-const Article = () => import("article/Article")
-const AdmAddArticle = () => import("content/addArticle")
-const EditArticle = () => import("content/editArticle")
-const Home = () => import("home/Home")
-const UseAddArticle = () => import("home/childComps/UseAddArticle")
-const Register = () => import("register/Register")
-const Details = () => import("articleDetails/articleDetails")
-const previewArticle = () => import("article/childComps/previewArticle")
-const UserInfo = () => import("userInfo/UserInfo")
-const Info = () => import("userInfo/childComps/Info")
-const UserPub = () => import("userInfo/childComps/MyPublished")
+const Login = () =>
+  import(/* webpackChunkName: "Login_Home" */ "login/Login")
+
+const Home = () =>
+  import(/* webpackChunkName: "Login_Home" */ "home/Home")
+
+const Admin = () =>
+  import(/* webpackChunkName: "admin_Welcome" */ "admin/Admin")
+
+const Welcome = () =>
+  import(/* webpackChunkName: "admin_Welcome" */ "admin/childComps/Welcome")
+
+const Users = () =>
+  import(/* webpackChunkName: "admin_Users" */ "users/Users")
+
+const Article = () =>
+  import(/* webpackChunkName: "admin_Article" */ "article/Article")
+
+const AdmAddArticle = () =>
+  import(/* webpackChunkName: "admin_Article" */ "content/addArticle")
+
+const EditArticle = () =>
+  import(/* webpackChunkName: "admin_Article" */ "content/editArticle")
+
+const previewArticle = () =>
+  import(/* webpackChunkName: "admin_Article" */ "article/childComps/previewArticle")
+
+const UseAddArticle = () =>
+  import(/* webpackChunkName: "Home_Article" */ "home/childComps/UseAddArticle")
+
+const Details = () =>
+  import(/* webpackChunkName: "Home_Article" */ "articleDetails/articleDetails")
+
+const Register = () =>
+  import(/* webpackChunkName: "Home_Register" */ "register/Register")
+
+
+const UserInfo = () =>
+  import(/* webpackChunkName: "Home_user" */ "userInfo/UserInfo")
+
+const Info = () =>
+  import(/* webpackChunkName: "Home_user" */ "userInfo/childComps/Info")
+
+const UserPub = () =>
+  import(/* webpackChunkName: "Home_user" */ "userInfo/childComps/MyPublished")
+
 
 Vue.use(VueRouter)
 

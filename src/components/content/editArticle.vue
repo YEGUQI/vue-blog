@@ -134,8 +134,8 @@ export default {
         ]
       },
       // 配置文件上传的 url
-      uploadUrl: "http://127.0.0.1/admin/articles/upload",
-      uploadUrl2: "http://127.0.0.1/admin/articles/articleUp",
+      uploadUrl: "http://39.106.5.72:8889/admin/articles/upload",
+      uploadUrl2: "http://39.106.5.72:8889/admin/articles/articleUp",
       // 配置文件上传的请求头
       uploadheaders: {
         Authorization: window.sessionStorage.getItem("token")
