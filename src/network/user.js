@@ -51,3 +51,12 @@ export function editUser (editInfo) {
     data: editInfo
   })
 }
+
+// 根据id查找该用户发布的所有文章
+export function findUserArticle (id, info) {
+  return request({
+    method: 'get',
+    url: "home/articles" + id,
+    params: info,
+  })
+}

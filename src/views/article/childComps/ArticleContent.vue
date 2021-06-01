@@ -42,7 +42,7 @@
         >
         </el-table-column>
         <el-table-column
-          prop="author"
+          prop="author.username"
           label="作者"
           width="180"
         >
@@ -80,6 +80,10 @@
               type='warning'
               @click="deleteArticle(scope.row._id)"
             >删除</el-button>
+            <el-button
+              type="success"
+              @click="previewArticle(scope.row._id)"
+            >预览</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,7 +111,6 @@ import {
   StickArticle,
   findArticle
 } from "network/article";
-import { getFindUserById } from "network/user";
 export default {
   name: "ArticleContent",
   data() {
@@ -150,7 +153,6 @@ export default {
       }
       this.articlesList = result.data;
       this.total = result.data.total;
-      this.getUserinfo();
     },
     //删除文章
     async deleteArticle(id) {
@@ -189,15 +191,9 @@ export default {
       this.$store.state.article = result.data;
       this.$router.push("/edit");
     },
-    // 根据 id 查询用户信息
-    async getUserinfo() {
-      // 遍历 文章数据中的 用户名
-      this.articlesList.article.forEach(async item => {
-        // 根据 id查询用户信息
-        const { data: result } = await getFindUserById(item.author);
-        // 将文章数据中的用户 id 替换为用户名
-        item.author = result.data.username;
-      });
+    previewArticle(id) {
+      window.sessionStorage.setItem("articleId", id);
+      this.$router.push("/preview");
     }
   }
 };

@@ -141,6 +141,20 @@
             <el-switch v-model="addUserForm.state">
             </el-switch>
           </el-form-item>
+          <el-form-item label="上传头像">
+            <el-upload
+              :action="uploadUrl"
+              list-type="picture-card"
+              :show-file-list="true"
+              :on-remove="handleRemove"
+              :on-success="uploadSuccess"
+              :before-upload="beforeAvatarUpload"
+              :limit='1'
+              :on-exceed="beyondlimit"
+            >
+              <i class="el-icon-plus"></i>
+            </el-upload>
+          </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
@@ -159,6 +173,7 @@
       title="修改用户"
       width="50%"
       :visible.sync="editUserDialogVisible"
+      @close='closeDialog'
     >
       <el-form
         :model="userinfo"
@@ -196,6 +211,21 @@
           <el-switch v-model="userinfo.state">
           </el-switch>
         </el-form-item>
+        <el-form-item label="上传头像">
+          <el-upload
+            :action="uploadUrl"
+            list-type="picture-card"
+            :show-file-list="true"
+            :on-remove="handleRemove"
+            :on-success="uploadSuccess2"
+            :before-upload="beforeAvatarUpload"
+            :limit='1'
+            :file-list="fileList"
+            :on-exceed="beyondlimit"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -220,8 +250,10 @@ import {
   deleteUserById,
   editUser
 } from "network/user";
+
 export default {
   name: "UserContent",
+  inject: ["reload"],
   data() {
     // 自定义密码验证规则
     var checkPaw = (rule, val, cb) => {
@@ -252,7 +284,8 @@ export default {
         email: "",
         password: "",
         role: "普通用户",
-        state: true
+        state: true,
+        avatar: {}
       },
       // 添加用户表单的验证规则
       addUserRules: {
@@ -305,7 +338,18 @@ export default {
       ],
       // 根据 id 查找的用户信息
       userinfo: {},
-      total: 0
+      total: 0,
+      // 上传头像的 url
+      uploadUrl: "http://127.0.0.1/admin/articles/avatar",
+      imageUrl: "",
+      dialogVisible: false,
+      // 文件列表
+      fileList: [
+        {
+          name: "",
+          url: ""
+        }
+      ]
     };
   },
   created() {
@@ -352,15 +396,26 @@ export default {
       // 清空添加用户表单中的内容
       this.$refs.addUserRef.resetFields();
     },
-    // 根据id查找指定用户
+    // 根据 id 查找指定用户
     async findUserByid(id) {
       const { data: result } = await getFindUserById(id);
-      console.log(result);
       if (result.meta.status !== 200) {
         return this.$message.error(result.meta.msg);
       }
       this.userinfo = result.data;
       this.editUserDialogVisible = true;
+      console.log(this.userinfo.avatar);
+      // 用户有头像
+      if (this.userinfo.avatar !== null) {
+        // 获取 用户头像
+        this.fileList[0].url = this.userinfo.avatar.url;
+        this.fileList[0].name = this.userinfo.avatar.name;
+        this.imageUrl = this.userinfo.avatar.url;
+      } else {
+        // 用户没有头像
+        this.fileList = [];
+      }
+      console.log(this.fileList);
     },
     // 根据 id 修改指定用户的状态
     async userStateChange(stateInfo) {
@@ -391,6 +446,7 @@ export default {
     },
     // 修改用户信息
     async editUser() {
+      console.log(this.userinfo);
       const { data: result } = await editUser(this.userinfo);
       if (result.meta.status !== 200) {
         return this.$message.error(result.meta.msg);
@@ -399,6 +455,47 @@ export default {
       this.editUserDialogVisible = false;
       // 刷新用户列表
       this.getUserlist();
+      // 刷新页面
+      this.reload();
+    },
+    //上传用户头像 监听图片上传成功的事件
+    uploadSuccess(res, file) {
+      // 将服务器返回的 路径保存在 addArticleForm.cover 中
+      this.addUserForm.avatar = res.data;
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    // 修改用户头像 监听图片上传成功的事件
+    uploadSuccess2(res, file) {
+      // 将服务器返回的 路径保存在 userinfo.cover 中
+      this.userinfo.avatar = res.data;
+      this.imageUrl = URL.createObjectURL(file.raw);
+    },
+    // 处理移除图片的操作
+    handleRemove() {
+      this.addUserForm.avatar = null;
+      this.userinfo.avatar = null;
+      console.log(this.userinfo.avatar);
+    },
+    //限制用户上传的图片格式和大小。
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG/ 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    //文件超出个数限制时的钩子函数
+    beyondlimit() {
+      this.$message.warning("只能上传一张封面！");
+    },
+    // 监听修改用户信息对话框的关闭事件
+    closeDialog() {
+      this.reload();
     }
   }
 };
@@ -408,4 +505,9 @@ export default {
 .el-table{
   margin: 15px 0 15px 0;
 }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

@@ -96,6 +96,7 @@ export default {
         // 将用户名保存在 sessionStorage 中
         window.sessionStorage.setItem("userId", result.data._id);
         window.sessionStorage.setItem("username", result.data.username);
+        window.sessionStorage.setItem("role", result.data.role);
         // 登录成功 将从服务器返回的 token 值保存到客户端 sessionStorage 中
         // 项目中除了登录之外的 API 接口，必须要在登录以后才能访问
         // token 只应在网页打开期间生效 所以保存到 sessionStorage 中

@@ -2,7 +2,7 @@
   <div class="contain-height">
     <ELheader></ELheader>
     <el-container class="contain-height">
-      <ELaside></ELaside>
+      <ELaside :index="{url1:'users',url2:'article'}"></ELaside>
       <el-main>
         <router-view></router-view>
       </el-main>
@@ -15,7 +15,7 @@
 import { getUserList } from "network/user";
 
 import ELheader from "admin/childComps/ELheader";
-import ELaside from "./childComps/ELaside.vue";
+import ELaside from "content/ELaside.vue";
 export default {
   components: {
     ELheader,

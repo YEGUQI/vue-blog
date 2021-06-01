@@ -113,7 +113,9 @@ export default {
         publishDate: "",
         cover: {},
         content: "",
-        intro: ""
+        intro: "",
+        // 文章中引用的图片
+        articleImg: {}
       },
       // 添加文章表单验证规则
       addArticleRules: {
@@ -160,7 +162,7 @@ export default {
       uploadConfig: {
         action: this.uploadUrl2, // 必填参数 图片上传地址
         res: respnse => {
-          console.log(respnse);
+          this.addArticleForm.articleImg = respnse.data;
           return respnse.data.url; //return图片 url
         }
       }
@@ -190,10 +192,17 @@ export default {
     async addArticle() {
       const { data: result } = await addArticle(this.addArticleForm);
       if (result.meta.status !== 200) {
-        this.$message.error("发布文章失败");
+        return this.$message.error("发布文章失败");
       }
-      this.$message.success("发布文章成功");
+      console.log(this.$route.fullPath);
+      // 判断当前是 用户添加 文章 还是 管理员 添加文章
+      if (this.$route.fullPath === "/useadd") {
+        // 用户添加文章 成功后跳转到首页
+        return this.$router.push("/home");
+      }
+      // 管理员添加文章 成功后跳转到文章管理页
       this.$router.push("/article");
+      this.$message.success("发布文章成功");
     }
   }
 };

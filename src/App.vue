@@ -34,5 +34,6 @@ export default {
 <style>
 @import "assets/css/global.css";
 @import "assets/css/normalize.css";
+@import "assets/font/iconfont.css";
 
 </style>

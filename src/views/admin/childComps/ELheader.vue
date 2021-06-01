@@ -15,10 +15,16 @@
         <el-tag>{{username}}</el-tag>
       </div>
       <!-- 退出登录按钮区域 -->
-      <el-button
-        @click="clearQuit"
-        type="info"
-      >退出登录</el-button>
+      <div>
+        <el-button
+          @click="goHome"
+          type="success"
+        >去首页</el-button>
+        <el-button
+          @click="clearQuit"
+          type="info"
+        >退出登录</el-button>
+      </div>
     </el-header>
   </div>
 </template>
@@ -36,6 +42,9 @@ export default {
     clearQuit() {
       window.sessionStorage.clear();
       this.$router.push("/login");
+    },
+    goHome() {
+      this.$router.push("/home");
     }
   },
   created() {

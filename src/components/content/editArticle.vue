@@ -35,7 +35,7 @@
         </el-form-item>
         <el-form-item label="作者">
           <el-input
-            v-model="usernma"
+            v-model="editArticleForm.author.username"
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -69,7 +69,11 @@
           </el-upload>
         </el-form-item>
         <el-form-item label="文章内容">
-          <quill-editor v-model="editArticleForm.content "></quill-editor>
+          <quill-editor
+            v-model="editArticleForm.content"
+            :options="editorOption"
+            ref="myQuillEditor"
+          ></quill-editor>
           <el-button
             type="primary"
             class="subbtn"
@@ -95,22 +99,24 @@
 
 <script>
 import { editArticle, findArticle } from "network/article";
-import { getFindUserById } from "network/user";
+import { quillRedefine } from "vue-quill-editor-upload";
+
 export default {
   name: "editArticle",
   data() {
     return {
-      // 添加文章表单数据
+      // 修改文章表单数据
       editArticleForm: {
         title: "",
         author: "",
         publishDate: "",
         cover: {},
         content: "",
-        intro: ""
+        intro: "",
+        // 文章中引用的图片
+        articleImg: []
       },
-      usernma: "",
-      // 添加文章表单验证规则
+      // 修改文章表单验证规则
       editArticleRules: {
         title: [
           { required: true, message: "请输入文章标题", trigger: "blur" },
@@ -129,6 +135,7 @@ export default {
       },
       // 配置文件上传的 url
       uploadUrl: "http://127.0.0.1/admin/articles/upload",
+      uploadUrl2: "http://127.0.0.1/admin/articles/articleUp",
       // 配置文件上传的请求头
       uploadheaders: {
         Authorization: window.sessionStorage.getItem("token")
@@ -137,6 +144,7 @@ export default {
       previewUrl: "",
       // 控制预览图片对话框的显示与隐藏
       previewDialogVisible: false,
+      editorOption: {},
       fileList: [
         {
           name: "",
@@ -147,6 +155,18 @@ export default {
   },
   created() {
     this.getArticleInfo();
+    //修改富文本编辑器图片上传路径
+    this.editorOption = quillRedefine({
+      // 图片上传的设置
+      uploadConfig: {
+        action: this.uploadUrl2, // 必填参数 图片上传地址
+        res: respnse => {
+          this.editArticleForm.articleImg.push(respnse.data.tmp_path);
+          console.log(this.editArticleForm.articleImg);
+          return respnse.data.url; //return图片 url
+        }
+      }
+    });
   },
   methods: {
     // 监听图片上传成功的事件
@@ -162,7 +182,7 @@ export default {
     },
     // 处理移除图片的操作
     handleRemove() {
-      this.editArticleForm.cover = null;
+      this.editArticleForm.avatar = null;
     },
     //文件超出个数限制时的钩子函数
     beyondlimit() {
@@ -177,7 +197,7 @@ export default {
         return this.$message.error(result.meta.msg);
       }
       this.$message.success(result.meta.msg);
-      this.editArticleForm = result.data;
+      this.editArticleForm = result.data.article;
       // 文章有封面
       if (this.editArticleForm.cover !== null) {
         // 获取 文章封面数据
@@ -188,19 +208,6 @@ export default {
         // 文章没有封面
         this.fileList = [];
       }
-
-      // 将文章信息 中保存的 用户id 替换成 用户名
-      this.getUserinfo();
-    },
-    // 根据 id 查询 用户名
-    async getUserinfo() {
-      const { data: result } = await getFindUserById(
-        this.editArticleForm.author
-      );
-      if (result.meta.status !== 200) {
-        return this.$message.error("获取用户信息失败");
-      }
-      this.usernma = result.data.username;
     },
     // 点击修改文章
     async editArticle() {

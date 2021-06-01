@@ -58,6 +58,7 @@
       >
       </el-pagination>
     </el-card>
+
     <!-- 所有文章区域 -->
     <el-card v-if="articlesList.length!==0">
       <el-tag>发现更多好文章</el-tag>
@@ -98,6 +99,7 @@
       >
       </el-pagination>
     </el-card>
+
     <!-- 分页区域 -->
     <el-pagination
       @size-change="handleSizeChange"
@@ -109,6 +111,7 @@
       :total="total"
     >
     </el-pagination>
+
     <!-- 返回顶部 -->
     <el-backtop :visibility-height="400">↑</el-backtop>
   </el-main>
@@ -153,11 +156,12 @@ export default {
     this.getArticlesList();
   },
   methods: {
-    // 获取多赢的文章数据
+    // 获取对应的文章数据
     async getArticlesList() {
       // 搜索框数据联动
       this.siftArticlesinfo.query = this.info.query;
       this.articlesinfo.query = this.info.query;
+
       // 获取所有文章数据
       const { data: result1 } = await getAllArticlesList(this.info);
       this.allarticlesList = result1.data;
@@ -168,6 +172,7 @@ export default {
         this.siftArticlesinfo
       );
       this.siftArticlesList = result2.data;
+
       // 获取普通文章数据
       const { data: result3 } = await getArticlesList(this.articlesinfo);
       this.articlesList = result3.data;

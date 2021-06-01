@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Elheader></Elheader>
     <useAddArticle class="addContent">
       <template v-slot:top>
         <el-page-header
@@ -14,13 +13,11 @@
 </template>
 
 <script>
-import Elheader from "../childComps/ELheader";
 import useAddArticle from "content/addArticle";
 export default {
   name: "addArticle",
   components: {
-    useAddArticle,
-    Elheader
+    useAddArticle
   },
   data() {
     return {};

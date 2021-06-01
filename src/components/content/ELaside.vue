@@ -7,7 +7,7 @@
       :unique-opened="true"
       :collapse-transition="false"
       :router="true"
-      default-active="user"
+      :default-active="activePath"
     >
       <!-- 用户管理 -->
       <el-submenu index="user">
@@ -16,19 +16,19 @@
           <!-- 图标 -->
           <i class="el-icon-user-solid"></i>
           <!-- 文本内容 -->
-          <span>用户管理</span>
+          <slot name="one"><span>用户管理</span></slot>
         </template>
         <!-- 二级菜单 -->
-        <el-menu-item
-          index="users"
-          @click="saveState"
-        >
+        <el-menu-item :index="index.url1">
           <!-- 二级菜单的模板区域 -->
           <template slot="title">
             <!-- 图标 -->
             <i class="el-icon-menu"></i>
             <!-- 文本内容 -->
-            <span>用户列表</span>
+            <slot name="two">
+              <span>用户列表</span>
+            </slot>
+
           </template>
         </el-menu-item>
       </el-submenu>
@@ -39,19 +39,20 @@
           <!-- 图标 -->
           <i class="el-icon-postcard"></i>
           <!-- 文本内容 -->
-          <span>文章管理</span>
+          <slot name="three">
+            <span>文章管理</span>
+          </slot>
         </template>
         <!-- 二级菜单 -->
-        <el-menu-item
-          index="article"
-          @click="saveState"
-        >
+        <el-menu-item :index="index.url2">
           <!-- 二级菜单的模板区域 -->
           <template slot="title">
             <!-- 图标 -->
             <i class="el-icon-menu"></i>
             <!-- 文本内容 -->
-            <span>文章列表</span>
+            <slot name="four">
+              <span>文章列表</span>
+            </slot>
           </template>
         </el-menu-item>
       </el-submenu>
@@ -67,16 +68,18 @@ export default {
       activePath: ""
     };
   },
-  created() {
-    //将二级菜单链接状态 赋值给  activePath
-    this.activePath = window.sessionStorage.getItem("activeState");
-  },
-  methods: {
-    // 保存二级菜单链接状态
-    saveState(activePath) {
-      window.sessionStorage.setItem("activeState", activePath);
-      this.activePath = activePath;
+  props: {
+    index: {
+      type: Object,
+      dafault() {
+        return {};
+      }
     }
+  },
+  mounted() {
+    let activePath = this.$route.path;
+    // 去除 /
+    this.activePath = activePath.slice(1);
   }
 };
 </script>

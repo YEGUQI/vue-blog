@@ -6,6 +6,7 @@ module.exports = {
         components: "@/components",
         common: "@/components/common",
         content: "@/components/content",
+        font: "@/assets/font",
         views: "@/views",
         network: "@/network",
         home: "@/views/home",
@@ -14,12 +15,13 @@ module.exports = {
         users: "@/views/users",
         article: "@/views/article",
         register: "@/views/register",
-        articleDetails: "@/views/articleDetails"
+        articleDetails: "@/views/articleDetails",
+        userInfo: "@/views/userInfo"
       }
     },
   },
   devServer: {
-    host: '0.0.0.0',
-    disableHostCheck: true
+    host: '127.0.0.1',
+    port: 8080,
   }
 }
